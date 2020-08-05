@@ -1,8 +1,11 @@
 package com.hc.kotlinvideo.base
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.hc.kotlinvideo.ui.activity.MainActivity
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
 /**
@@ -22,11 +25,12 @@ abstract class BaseActivity :AppCompatActivity(),AnkoLogger {
     }
 
 
-    protected fun initData() {
+    //加上 Open 关键字子类才能复写
+    open protected fun initData() {
         //TODO("Not yet implemented")
     }
 
-    protected fun initListener() {
+    open protected fun initListener() {
         //TODO("Not yet implemented")
     }
 
@@ -42,6 +46,10 @@ abstract class BaseActivity :AppCompatActivity(),AnkoLogger {
 
     //log 打印(通过 Anko )
 
-
+    //跳转到对应 Activity 并结束当前类
+    inline fun <reified T: BaseActivity>startActivityAndFinish(){
+        startActivity<T>()
+        finish()
+    }
 
 }

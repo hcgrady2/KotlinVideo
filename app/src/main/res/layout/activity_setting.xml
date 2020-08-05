@@ -4,18 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/toolbar"/>
 
 
-    <ImageView
-        android:id="@+id/iv_splash_bg"
-        android:src="@mipmap/default_splash_bg"
-        android:scaleType="centerCrop"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
+    <fragment
+        android:id= "@+id/setting_fragment"
+        android:name="com.hc.kotlinvideo.ui.fragment.SettingFragment"
+        class="com.hc.kotlinvideo.ui.fragment.SettingFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-
 
 
 </LinearLayout>
