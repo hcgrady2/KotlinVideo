@@ -1,6 +1,7 @@
 package com.hc.kotlinvideo.ui.activity
 
 import androidx.appcompat.widget.Toolbar
+import androidx.preference.PreferenceManager
 import com.hc.kotlinvideo.R
 import com.hc.kotlinvideo.base.BaseActivity
 import com.hc.kotlinvideo.util.ToolBarManager
@@ -23,5 +24,12 @@ class SettingActivity : BaseActivity() ,ToolBarManager{
     override fun initData() {
         super.initData()
         initSettingToolBar()
+
+        val  sp = PreferenceManager.getDefaultSharedPreferences(this)
+        val push  = sp.getBoolean("push",false)
+
+
+
+
     }
 }
