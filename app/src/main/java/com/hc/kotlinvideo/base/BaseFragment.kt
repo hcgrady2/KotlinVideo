@@ -24,8 +24,14 @@ abstract  class BaseFragment : Fragment(),AnkoLogger{
     }
 
     //fragment 初始化
-    protected fun init() {
+    open protected fun init() {
 
+    }
+
+    open protected fun initData() {
+    }
+
+    open protected fun initListener() {
     }
 
     
@@ -45,11 +51,7 @@ abstract  class BaseFragment : Fragment(),AnkoLogger{
     }
 
 
-    protected fun initData() {
-    }
 
-    protected fun initListener() {
-    }
 
 
     fun myToast(msg:String){
