@@ -1,4 +1,4 @@
-package com.itheima.player.util;
+package com.hc.kotlinvideo.util;
 
 import android.util.Log;
 

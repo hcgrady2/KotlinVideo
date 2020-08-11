@@ -50,10 +50,6 @@ abstract  class BaseFragment : Fragment(),AnkoLogger{
         initData()
     }
 
-
-
-
-
     fun myToast(msg:String){
         runOnUiThread {
             toast(msg)
