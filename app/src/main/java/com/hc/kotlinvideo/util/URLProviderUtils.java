@@ -11,7 +11,7 @@ public class URLProviderUtils {
      * @param size   返回数据的条目个数
      * @return url
      */
-    public static String getHomeUrl(int offset, int size) {
+    public static String getHomeUrl2(int offset, int size) {
         String url = "http://mapi.yinyuetai.com/suggestions/front_page.json?deviceinfo="
                 + "{\"aid\":\"10201036\",\"os\":\"Android\","
                 + "\"ov\":" + "\"" + getSystemVersion() + "\"" + ","
@@ -26,6 +26,23 @@ public class URLProviderUtils {
                 + "&offset=" + offset
                 + "&size=" + size
                 + "&v=4&rn=640*540";
+        Log.i("Main_url", url);
+        return url;
+    }
+
+
+
+    /**
+     * 获取首页的url
+     *
+     * @param offset 数据偏移量
+     * @param size   返回数据的条目个数
+     * @return url
+     */
+    public static String getHomeUrl(int offset, int size) {
+        String url = "http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version=5.6.5.0&method=baidu.ting.artist.getSongList&format=json&order=2&tinguid=7988&artistid=7988"
+                + "&offset=" + offset
+                + "&limits=" + size;
         Log.i("Main_url", url);
         return url;
     }
