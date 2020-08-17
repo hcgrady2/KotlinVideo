@@ -34,13 +34,22 @@ class HomeFragment : BaseFragment() {
         HomeAdapter()
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun initListener() {
         super.initListener()
         recycler_view.layoutManager = LinearLayoutManager(context)
         //条目适配
        // val adapter = HomeAdapter()
         recycler_view.adapter = adapter
+        //下拉刷新控件初始化
+        refresh_layout.setColorSchemeColors(resources.getColor(R.color.colorAccent),
+            resources.getColor(R.color.colorPrimary),resources.getColor(R.color.green))
 
+
+        //下拉刷新监听
+        refresh_layout.setOnRefreshListener {
+            loadDatas()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -66,12 +75,18 @@ class HomeFragment : BaseFragment() {
              * 注意两个回调都是自线程的
              */
             override fun onFailure(call: Call, e: IOException) {
-                Log.i("hctag", "onFailure: 获取数据出错:" + Thread.currentThread().name)
+                ThreadUtil.runOnMainThread(object :Runnable{
+
+                    override fun run() {
+                        refresh_layout.isRefreshing = false
+                    }
+                })
+                Log.i("hctag", "onFailure: 获取数据出错:" + e)
                 myToast("获取数据出错")
+
             }
 
             override fun onResponse(call: Call, response: Response) {
-
                // myToast("获取数据成功")
                 val result = response.body?.string().toString()
                 val gson = Gson()
@@ -81,6 +96,7 @@ class HomeFragment : BaseFragment() {
                     result,
                     object : TypeToken<HomeBean>() {}.type
                 )
+
              // val list = gson.fromJson<List<HomeItemBean>>(result,object :TypeToken<List<HomeItemBean>>() {}.type)
 
                 //主线程刷新列表
@@ -90,9 +106,10 @@ class HomeFragment : BaseFragment() {
 //                    }
 //                })
 
-
                 ThreadUtil.runOnMainThread(object : Runnable {
                     override fun run() {
+                        Log.i("hctag", "run: 准备隐藏 REFRESH")
+                        refresh_layout.isRefreshing = false
                         adapter.setData(list.songlist)
                     }
                 });

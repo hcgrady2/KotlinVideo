@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
+import com.bumptech.glide.Glide
 import com.hc.kotlinvideo.R
 import com.hc.kotlinvideo.model.HomeItemBean
-import java.util.jar.Attributes
 import kotlinx.android.synthetic.main.item_home.view.*
 
 /**
@@ -36,7 +36,8 @@ class HomeItemView : RelativeLayout {
         title.setText(data.title)
         //简介
         desc.setText(data.author)
-        //背景图片
+        //背景图片,如果背景使用 src , 那么 scaleType 使用 "centerCrop"
+        Glide.with(this).load(data.album_500_500).into(bg)
     }
 }
 
