@@ -13,8 +13,11 @@ import com.hc.kotlinvideo.R
 import com.hc.kotlinvideo.adapter.HomeAdapter
 import com.hc.kotlinvideo.base.BaseFragment
 import com.hc.kotlinvideo.model.HomeBean
+import com.hc.kotlinvideo.model.HomeItemBean
+import com.hc.kotlinvideo.presenter.impl.HomePresenterImpl
 import com.hc.kotlinvideo.util.ThreadUtil
 import com.hc.kotlinvideo.util.URLProviderUtils
+import com.hc.kotlinvideo.view.HomeView
 import kotlinx.android.synthetic.main.fragment_home.*
 import okhttp3.*
 import java.io.IOException
@@ -24,7 +27,7 @@ import java.io.IOException
  * 类描述：
  * all rights reserved
  */
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(),HomeView {
     override fun initView(): View? {
         return  View.inflate(context,R.layout.fragment_home,null)
     }
@@ -33,6 +36,11 @@ class HomeFragment : BaseFragment() {
     val adapter by lazy {
         //条目适配
         HomeAdapter()
+    }
+
+
+    val presenter  by lazy {
+        HomePresenterImpl(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -49,14 +57,14 @@ class HomeFragment : BaseFragment() {
 
         //下拉刷新监听
         refresh_layout.setOnRefreshListener {
-            loadDatas()
+            presenter.loadDatas(context)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun initData() {
         super.initData()
-        loadDatas();
+        presenter.loadDatas(context)
         //SpringBootApi()
 
         //监听滑动
@@ -87,7 +95,7 @@ class HomeFragment : BaseFragment() {
                         val manager :LinearLayoutManager = layoutManager
                         val lastPosition  = manager.findLastVisibleItemPosition()
                         if (lastPosition == adapter.itemCount - 1 ){
-                                loadDataMore(lastPosition)
+                                presenter.loadDataMore(lastPosition,context)
                         }
 
 
@@ -107,122 +115,14 @@ class HomeFragment : BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun loadDataMore(offset:Int) {
-        val path  = URLProviderUtils.getHomeUrl(offset,20)
-        val client = OkHttpClient()
-        val requeset = Request.Builder()
-            .url(path)
-            .removeHeader("User-Agent")
-            .addHeader("User-Agent", WebSettings.getDefaultUserAgent(context))
-            .get()
-            .build()
-
-        client.newCall(requeset).enqueue(object :Callback{
-            /**
-             * 注意两个回调都是自线程的
-             */
-            override fun onFailure(call: Call, e: IOException) {
-                ThreadUtil.runOnMainThread(object :Runnable{
-
-                    override fun run() {
-                        refresh_layout.isRefreshing = false
-                    }
-                })
-                Log.i("hctag", "onFailure: 获取数据出错:" + e)
-                myToast("获取数据出错")
-
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                // myToast("获取数据成功")
-                val result = response.body?.string().toString()
-                val gson = Gson()
-                //object 匿名内部类
-                // val list = gson.fromJson<List<HomeItemBean>>(result,object :TypeToken<List<HomeItemBean>>(){}.type)
-                val list = gson.fromJson<HomeBean>(
-                    result,
-                    object : TypeToken<HomeBean>() {}.type
-                )
-
-                // val list = gson.fromJson<List<HomeItemBean>>(result,object :TypeToken<List<HomeItemBean>>() {}.type)
-
-                //主线程刷新列表
-//                ThreadUtil.runOnMainThread(object :Runnable{
-//                    override fun run() {
-//                        adapter.updateList(list)
-//                    }
-//                })
-
-                ThreadUtil.runOnMainThread(object : Runnable {
-                    override fun run() {
-                        Log.i("hctag", "run: 准备隐藏 REFRESH")
-                        refresh_layout.isRefreshing = false
-                        adapter.loadMore(list.songlist)
-                    }
-                });
-            }
-
-        })
+        //see presenter
     }
 
 
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun loadDatas() {
-        val path  = URLProviderUtils.getHomeUrl(0,20)
-        val client = OkHttpClient()
-        val requeset = Request.Builder()
-            .url(path)
-            .removeHeader("User-Agent")
-            .addHeader("User-Agent", WebSettings.getDefaultUserAgent(context))
-            .get()
-            .build()
-
-        client.newCall(requeset).enqueue(object :Callback{
-            /**
-             * 注意两个回调都是自线程的
-             */
-            override fun onFailure(call: Call, e: IOException) {
-                ThreadUtil.runOnMainThread(object :Runnable{
-
-                    override fun run() {
-                        refresh_layout.isRefreshing = false
-                    }
-                })
-                Log.i("hctag", "onFailure: 获取数据出错:" + e)
-                myToast("获取数据出错")
-
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-               // myToast("获取数据成功")
-                val result = response.body?.string().toString()
-                val gson = Gson()
-                //object 匿名内部类
-               // val list = gson.fromJson<List<HomeItemBean>>(result,object :TypeToken<List<HomeItemBean>>(){}.type)
-                val list = gson.fromJson<HomeBean>(
-                    result,
-                    object : TypeToken<HomeBean>() {}.type
-                )
-
-             // val list = gson.fromJson<List<HomeItemBean>>(result,object :TypeToken<List<HomeItemBean>>() {}.type)
-
-                //主线程刷新列表
-//                ThreadUtil.runOnMainThread(object :Runnable{
-//                    override fun run() {
-//                        adapter.updateList(list)
-//                    }
-//                })
-
-                ThreadUtil.runOnMainThread(object : Runnable {
-                    override fun run() {
-                        Log.i("hctag", "run: 准备隐藏 REFRESH")
-                        refresh_layout.isRefreshing = false
-                        adapter.setData(list.songlist)
-                    }
-                });
-            }
-
-        })
+        //set loadData
     }
 
 
@@ -247,6 +147,20 @@ class HomeFragment : BaseFragment() {
             }
 
         })
+    }
+
+    override fun onError(message: String?) {
+        myToast("加载数据失败" )
+    }
+
+    override fun loadSuccess(list: List<HomeItemBean>?) {
+        refresh_layout.isRefreshing = false
+        //刷新列表
+        adapter.setData(list)
+    }
+
+    override fun loadMore(list: List<HomeItemBean>?) {
+        adapter.loadMore(list)
     }
 
 }

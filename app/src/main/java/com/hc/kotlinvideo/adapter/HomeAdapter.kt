@@ -22,14 +22,19 @@ import com.hc.kotlinvideo.widget.LoadMoreView
 class HomeAdapter : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
     private var list = ArrayList<HomeItemBean>()
 
-    fun setData(list: List<HomeItemBean>) {
-        this.list.clear()
-        this.list.addAll(list);
-        notifyDataSetChanged()
+    fun setData(list2: List<HomeItemBean>?) {
+        list2.let {
+            this.list.clear()
+            if (list2 != null) {
+                this.list.addAll(list2)
+            }
+            notifyDataSetChanged()
+        }
+
     }
 
-    fun loadMore(list:List<HomeItemBean>){
-        this.list.addAll(list)
+    fun loadMore(list2:List<HomeItemBean>?){
+        list2?.let { this.list.addAll(it) }
         notifyDataSetChanged()
     }
 
