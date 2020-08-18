@@ -28,6 +28,11 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
         notifyDataSetChanged()
     }
 
+    fun loadMore(list:List<HomeItemBean>){
+        this.list.addAll(list)
+        notifyDataSetChanged()
+    }
+
     class HomeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
