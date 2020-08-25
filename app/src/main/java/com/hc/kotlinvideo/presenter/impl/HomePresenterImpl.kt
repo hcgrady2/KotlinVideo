@@ -17,7 +17,7 @@ import com.hc.kotlinvideo.util.ThreadUtil
 import com.hc.kotlinvideo.util.URLProviderUtils
 import com.hc.kotlinvideo.view.HomeView
 import com.hc.kotlinvideo.widget.HomeItemView
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import okhttp3.*
 import java.io.IOException
 

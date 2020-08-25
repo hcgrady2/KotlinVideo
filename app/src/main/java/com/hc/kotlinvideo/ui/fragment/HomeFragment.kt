@@ -7,18 +7,13 @@ import android.webkit.WebSettings
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.hc.kotlinvideo.R
 import com.hc.kotlinvideo.adapter.HomeAdapter
 import com.hc.kotlinvideo.base.BaseFragment
-import com.hc.kotlinvideo.model.HomeBean
 import com.hc.kotlinvideo.model.HomeItemBean
 import com.hc.kotlinvideo.presenter.impl.HomePresenterImpl
-import com.hc.kotlinvideo.util.ThreadUtil
-import com.hc.kotlinvideo.util.URLProviderUtils
 import com.hc.kotlinvideo.view.HomeView
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import okhttp3.*
 import java.io.IOException
 
@@ -29,7 +24,7 @@ import java.io.IOException
  */
 class HomeFragment : BaseFragment(),HomeView {
     override fun initView(): View? {
-        return  View.inflate(context,R.layout.fragment_home,null)
+        return  View.inflate(context,R.layout.fragment_list,null)
     }
 
     //条目适配

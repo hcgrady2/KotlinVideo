@@ -1,9 +1,11 @@
 package com.hc.kotlinvideo.ui.fragment
 
-import android.view.Gravity
 import android.view.View
-import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.hc.kotlinvideo.R
+import com.hc.kotlinvideo.adapter.YueDanAdapter
 import com.hc.kotlinvideo.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_list.*
 
 /**
  * Created by hcw  on 2020/8/10
@@ -11,11 +13,20 @@ import com.hc.kotlinvideo.base.BaseFragment
  * all rights reserved
  */
 class YueDanFragment : BaseFragment() {
-    override fun initView(): View? {
 
-        val  tv = TextView(context)
-        tv.gravity = Gravity.CENTER
-        tv.text = javaClass.simpleName
-        return  tv
+
+    val adapter by lazy {
+        YueDanAdapter()
     }
+
+    override fun initView(): View? {
+        return  View.inflate(context, R.layout.fragment_list,null)
+    }
+
+    override fun initListener() {
+        recycler_view.layoutManager = LinearLayoutManager(context)
+        recycler_view.adapter = adapter
+    }
+
+
 }
