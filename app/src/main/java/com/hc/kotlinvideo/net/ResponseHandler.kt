@@ -7,8 +7,8 @@ package com.hc.kotlinvideo.net
  */
 interface ResponseHandler<RESPONSER> {
 
-    fun onError(msg:String?)
+    fun onError(type:Int ,msg:String?)
 
-    fun onSuccess(result:RESPONSER)
+    fun onSuccess(type:Int,result:RESPONSER)
 
 }

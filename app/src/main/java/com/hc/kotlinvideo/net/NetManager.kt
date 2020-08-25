@@ -5,6 +5,7 @@ import android.webkit.WebSettings
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hc.kotlinvideo.model.HomeBean
+import com.hc.kotlinvideo.presenter.`interface`.HomePresenter
 import com.hc.kotlinvideo.util.ThreadUtil
 import com.hc.kotlinvideo.util.URLProviderUtils
 import okhttp3.*
@@ -53,7 +54,7 @@ class NetManager private  constructor(){
                         //2.0
                         //homeView.onError(e?.message)
                         //3.0
-                        req.handler.onError(e?.message)
+                        req.handler.onError(req.type,e?.message)
                     }
                 })
                 Log.i("hctag", "onFailure: 获取数据出错:" + e)
@@ -62,8 +63,12 @@ class NetManager private  constructor(){
             }
 
             override fun onResponse(call: Call, response: Response) {
+                Log.i("hcTag", "onResponse: 获取数据成功:" + response.body?.string())
                 // myToast("获取数据成功")
-                val result = response.body?.string().toString()
+
+
+
+
              //   val gson = Gson()
                 //object 匿名内部类
                 // val list = gson.fromJson<List<HomeItemBean>>(result,object :TypeToken<List<HomeItemBean>>(){}.type)
@@ -77,8 +82,38 @@ class NetManager private  constructor(){
 //                )
 
 
-                //NetManager 不知道每个页面要解析成的具体对象
-                val parseResult = req.pareseResult(result)
+
+
+                if (response.isSuccessful && response.code == 200){
+
+
+                    val result = response.body?.string().toString()
+
+
+                    //NetManager 不知道每个页面要解析成的具体对象
+                    val parseResult = req.pareseResult(result)
+
+
+                    ThreadUtil.runOnMainThread(object : Runnable {
+                        override fun run() {
+                            Log.i("hctag", "run: 准备隐藏 REFRESH")
+                            // refresh_layout.isRefreshing = false
+                            //adapter.loadMore(list.songlist)
+                            //2.0
+                            // homeView.loadMore(list.songlist)
+
+                            //3.0
+                            req.handler.onSuccess(req.type,parseResult)
+
+                        }
+                    })
+
+
+                }else{
+                    Log.i("hcTag", "onResponse: 服务器错误")
+                    req.handler.onError(HomePresenter.TYPE_INIT_OR_LOADMORE,"server error")
+                }
+
 
 
 
@@ -92,19 +127,9 @@ class NetManager private  constructor(){
 //                    }
 //                })
 
-                ThreadUtil.runOnMainThread(object : Runnable {
-                    override fun run() {
-                        Log.i("hctag", "run: 准备隐藏 REFRESH")
-                        // refresh_layout.isRefreshing = false
-                        //adapter.loadMore(list.songlist)
-                        //2.0
-                        // homeView.loadMore(list.songlist)
 
-                        //3.0
-                        req.handler.onSuccess(parseResult)
 
-                    }
-                });
+
             }
 
         })

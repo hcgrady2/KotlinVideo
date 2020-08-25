@@ -27,28 +27,49 @@ import java.io.IOException
  * all rights reserved
  */
 //加上 VAR 其他够在函数才能使用
-class HomePresenterImpl(var homeView :HomeView) : HomePresenter {
+class HomePresenterImpl(var homeView :HomeView?) : HomePresenter,ResponseHandler<List<HomeItemBean>> {
 
 
     init {
         homeView
     }
 
+
+    //解绑
+    fun  destroyView(){
+         if(homeView != null){
+             homeView = null
+         }
+    }
+
+
+
+
+
+
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun loadDatas(context:Context?) {
 
-        val requset = HomeRequset(0,object :ResponseHandler<List<HomeItemBean>>{
-            override fun onError(msg: String?) {
-                //NetManager 已经处理线程了
-                homeView.onError(msg)
-            }
+//        val requset = HomeRequset(0,object :ResponseHandler<List<HomeItemBean>>{
+//            override fun onError(msg: String?) {
+//                //NetManager 已经处理线程了
+//                homeView.onError(msg)
+//            }
+//
+//            override fun onSuccess(result: List<HomeItemBean>) {
+//                homeView.loadSuccess(result)
+//            }
+//        }).execute()
+//      //  NetManager.manager.sendRequest(requset)
 
-            override fun onSuccess(result: List<HomeItemBean>) {
-                homeView.loadSuccess(result)
-            }
-        })
 
-        NetManager.manager.sendRequest(requset)
+
+        val requset = HomeRequset(HomePresenter.TYPE_INIT_OR_REFRESH,0,this).execute()
+        //  NetManager.manager.sendRequest(requset)
+
+
+
 
 
 //        val path  = URLProviderUtils.getHomeUrl(0,20)
@@ -117,18 +138,9 @@ class HomePresenterImpl(var homeView :HomeView) : HomePresenter {
     override fun loadDataMore(lastPosition: Int, context: Context?) {
 
         //3.0
-        val requset = HomeRequset(lastPosition,object :ResponseHandler<List<HomeItemBean>>{
-            override fun onError(msg: String?) {
-                //NetManager 已经处理线程了
-                homeView.onError(msg)
-            }
+        val requset = HomeRequset(HomePresenter.TYPE_INIT_OR_LOADMORE,lastPosition,this).execute()
 
-            override fun onSuccess(result: List<HomeItemBean>) {
-                homeView.loadMore(result)
-            }
-        })
-
-        NetManager.manager.sendRequest(requset)
+  //      NetManager.manager.sendRequest(requset)
 
 
 //        val path  = URLProviderUtils.getHomeUrl(lastPosition,20)
@@ -190,6 +202,24 @@ class HomePresenterImpl(var homeView :HomeView) : HomePresenter {
 //        })
 //
 //
+
+    }
+
+    //统一封装数据回掉
+    override fun onError(type:Int,msg: String?) {
+        homeView?.onError(msg)
+    }
+
+    //需要区分是初始化还是加载更多
+    override fun onSuccess(type:Int,result: List<HomeItemBean>) {
+
+        when(type){
+           HomePresenter. TYPE_INIT_OR_REFRESH-> homeView?.loadSuccess(result)
+           HomePresenter. TYPE_INIT_OR_LOADMORE-> homeView?.loadMore(result)
+        }
+
+
+
 
     }
 

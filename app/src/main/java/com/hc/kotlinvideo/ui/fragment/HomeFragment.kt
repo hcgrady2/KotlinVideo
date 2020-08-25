@@ -150,6 +150,7 @@ class HomeFragment : BaseFragment(),HomeView {
     }
 
     override fun onError(message: String?) {
+        refresh_layout.isRefreshing = false
         myToast("加载数据失败" )
     }
 
@@ -160,6 +161,7 @@ class HomeFragment : BaseFragment(),HomeView {
     }
 
     override fun loadMore(list: List<HomeItemBean>?) {
+        refresh_layout.isRefreshing = false
         adapter.loadMore(list)
     }
 

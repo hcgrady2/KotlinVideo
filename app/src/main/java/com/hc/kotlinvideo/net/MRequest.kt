@@ -13,18 +13,28 @@ import java.lang.reflect.ParameterizedType
  */
 
 //加上 Open 才能被继承
-open class MRequest<RESPONSE>(val url:String,val handler:ResponseHandler<RESPONSE>) {
+open class MRequest<RESPONSE>(val type:Int,val url:String,val handler:ResponseHandler<RESPONSE>) {
     //解析网络请求结果
     fun pareseResult(result: String): RESPONSE {
+
+
         val gson = Gson()
         //获取泛型类型
         val type = (this.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
 
-        val list = gson.fromJson<RESPONSE>(
+
+
+        val list2 = gson.fromJson<RESPONSE>(
             result,type
         )
 
-        return  list
+
+        return  list2
+
+    }
+
+    fun execute(){
+        NetManager.manager.sendRequest(this)
 
     }
 

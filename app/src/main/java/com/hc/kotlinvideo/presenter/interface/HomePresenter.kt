@@ -8,6 +8,13 @@ import android.content.Context
  * all rights reserved
  */
 interface HomePresenter {
+
+    companion object{
+        val TYPE_INIT_OR_REFRESH   =1
+        val TYPE_INIT_OR_LOADMORE   =2
+    }
+
+
     fun loadDatas(context:Context?)
     fun loadDataMore(lastPosition: Int,context: Context?)
 }

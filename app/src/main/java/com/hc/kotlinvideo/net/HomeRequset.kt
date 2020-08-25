@@ -8,6 +8,6 @@ import com.hc.kotlinvideo.util.URLProviderUtils
  * 类描述：
  * all rights reserved
  */
-class HomeRequset(offset:Int,handler: ResponseHandler<List<HomeItemBean>>)
-    : MRequest<List<HomeItemBean>>(URLProviderUtils.getHomeUrl2(offset,20),handler) {
+class HomeRequset(type:Int,offset:Int,handler: ResponseHandler<List<HomeItemBean>>)
+    : MRequest<List<HomeItemBean>>(type,URLProviderUtils.getHomeUrl2(offset,20),handler) {
 }
