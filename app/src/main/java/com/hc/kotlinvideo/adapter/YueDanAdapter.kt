@@ -3,6 +3,7 @@ package com.hc.kotlinvideo.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hc.kotlinvideo.model.YueDanBean
 import com.hc.kotlinvideo.widget.YueDanItemView
 
 /**
@@ -11,6 +12,21 @@ import com.hc.kotlinvideo.widget.YueDanItemView
  * all rights reserved
  */
 class YueDanAdapter : RecyclerView.Adapter<YueDanAdapter.YueDanHolder>() {
+
+    private var list = ArrayList<YueDanBean.PlayListsBean>()
+
+
+
+    fun updateList(list2:List<YueDanBean.PlayListsBean>){
+        this.list.clear()
+        this.list.addAll(list2)
+        notifyDataSetChanged()
+    }
+
+
+
+
+
     class YueDanHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     }
 
@@ -19,7 +35,7 @@ class YueDanAdapter : RecyclerView.Adapter<YueDanAdapter.YueDanHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return  20
+        return  list.size
     }
 
     override fun onBindViewHolder(holder: YueDanHolder, position: Int) {

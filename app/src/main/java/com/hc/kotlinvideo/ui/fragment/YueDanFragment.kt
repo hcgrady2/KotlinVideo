@@ -5,6 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hc.kotlinvideo.R
 import com.hc.kotlinvideo.adapter.YueDanAdapter
 import com.hc.kotlinvideo.base.BaseFragment
+import com.hc.kotlinvideo.model.YueDanBean
+import com.hc.kotlinvideo.presenter.`interface`.YueDanPresenter
+import com.hc.kotlinvideo.presenter.impl.YueDanPresenterImpl
+import com.hc.kotlinvideo.view.YueDanView
 import kotlinx.android.synthetic.main.fragment_list.*
 
 /**
@@ -12,11 +16,12 @@ import kotlinx.android.synthetic.main.fragment_list.*
  * 类描述：
  * all rights reserved
  */
-class YueDanFragment : BaseFragment() {
-
-
+class YueDanFragment : BaseFragment(), YueDanView {
     val adapter by lazy {
         YueDanAdapter()
+    }
+    val presenter by lazy {
+        YueDanPresenterImpl(this)
     }
 
     override fun initView(): View? {
@@ -28,5 +33,26 @@ class YueDanFragment : BaseFragment() {
         recycler_view.adapter = adapter
     }
 
+
+    override fun initData() {
+        super.initData()
+
+        presenter.loadDatas(context)
+    }
+
+    override fun onError(message: String?) {
+        myToast("加载数据失败")
+    }
+
+    override fun loadSuccess(response: YueDanBean?) {
+        response?.playLists?.let { adapter.updateList(it) }
+    }
+
+    override fun loadMore(response: YueDanBean?) {
+
+
+
+
+    }
 
 }
